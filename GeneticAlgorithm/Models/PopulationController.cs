@@ -1,4 +1,5 @@
 ﻿using GeneticAlgorithm.Functions;
+using GeneticAlgorithm.Selections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,20 +15,19 @@ namespace GeneticAlgorithm.Models
         public PopulationController()
         {
             var rand = new Random((int)DateTime.Now.ToFileTime());
+            var function = new StyblinskiTangFunction();
 
             for (int i = 0; i < 20; i++)
             {
                 Population.Add(new Entity(
                     (float)rand.NextDouble() * 10 - 5,
-                    (float)rand.NextDouble() * 10 - 5
+                    (float)rand.NextDouble() * 10 - 5,
+                    function
                 ));
             }
 
-            var values = Population.Select(e => e.GetValue(new StyblinskiTangFunction())).ToArray();
-
-            var bits = Population.Select(e => e.GetBytes()).ToArray();
-
-            var backValues = bits.Select(b => new Entity(b)).ToArray();
+            var selected = new RouletteSelector().Select(Population, 0.25f, out IEnumerable<Entity> restOfPopulation).ToArray();
+            var rest = restOfPopulation.ToArray();
         }
     }
 }

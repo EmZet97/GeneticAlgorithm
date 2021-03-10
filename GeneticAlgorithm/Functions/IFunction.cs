@@ -2,6 +2,9 @@
 {
     public interface IFunction
     {
-        public float Compute(float x, float y);
+        public double Compute(double x, double y);
+        public Extremum Extremum { get; }
     }
+
+    public record Extremum(bool IsMaximum, float Value);
 }
