@@ -17,14 +17,17 @@ namespace GeneticAlgorithm.Models
 
             for (int i = 0; i < 20; i++)
             {
-                Population.Add(new Entity()
-                {
-                    X = (float)rand.NextDouble() * 10 - 5,
-                    Y = (float)rand.NextDouble() * 10 - 5
-                });
+                Population.Add(new Entity(
+                    (float)rand.NextDouble() * 10 - 5,
+                    (float)rand.NextDouble() * 10 - 5
+                ));
             }
 
             var values = Population.Select(e => e.GetValue(new StyblinskiTangFunction())).ToArray();
+
+            var bits = Population.Select(e => e.GetBytes()).ToArray();
+
+            var backValues = bits.Select(b => new Entity(b)).ToArray();
         }
     }
 }
