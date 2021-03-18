@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GeneticAlgorithm.Selections
 {
     public class RouletteSelector : ISelector
     {
+        public float Probability { get; init; }
+
         class RouletteElement
         {
             public Entity Entity { get; init; }
@@ -24,9 +24,14 @@ namespace GeneticAlgorithm.Selections
             }
         }
 
-        public IEnumerable<Entity> Select(IEnumerable<Entity> population, float partOfPopulation, out IEnumerable<Entity> restOfPopulation)
+        public RouletteSelector(float probability)
+        {
+            Probability = probability;
+        }
+
+        public IEnumerable<Entity> Select(IEnumerable<Entity> population, out IEnumerable<Entity> restOfPopulation)
         {         
-            uint elementsToSelection = (uint)(population.Count() * (partOfPopulation - (int)partOfPopulation));
+            uint elementsToSelection = (uint)(population.Count() * (Probability - (int)Probability));
 
             var currentPopulation = population.ToList();
             var random = new Random();
