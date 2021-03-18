@@ -1,4 +1,8 @@
-﻿using GeneticAlgorithm.Models;
+﻿using GeneticAlgorithm.Crossovers;
+using GeneticAlgorithm.Functions;
+using GeneticAlgorithm.Models;
+using GeneticAlgorithm.Mutation;
+using GeneticAlgorithm.Selections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +29,17 @@ namespace GeneticAlgorithm
         {
             InitializeComponent();
 
-            var population = new PopulationController();
+            var controllerBuilder = new PopulationControllerBuilder();
+
+            var controller = controllerBuilder
+                .AddSelectionMethod(new RouletteSelector(0.3f))
+                .AddCrossoverMethod(new OnePointCrossover(0.8f))
+                .AddMutationMethod(new BorderMutation(0.2f))
+                .AddValueFunction(new StyblinskiTangFunction())
+                .AddPrecision(1024, -5f, 5f)
+                .Build(100);
+
+            controller.StartEvolution(100);
         }
     }
 }
