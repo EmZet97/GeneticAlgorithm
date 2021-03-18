@@ -1,48 +1,71 @@
 ﻿using GeneticAlgorithm.Functions;
-using System.Collections;
 
 namespace GeneticAlgorithm.Models
 {
     public class Entity
     {
-        public double X { get; private set; }
-        public double Y { get; private set; }
-        public double Value { get; private set; }
-        public float ValueIndex { get; set; }
+        public ChromosomeDecoder ValueDecoder { get; private set; }
+        public Chromosome Chromosome { get; private set; }
+        public IFunction ValueFunction { get; set; }
 
-        public Entity(float x, float y, IFunction valueFunction)
+        public Entity(ChromosomeDecoder valueDecoder, IFunction valueFunction, uint xSegment, uint ySegment)
         {
-            X = x;
-            Y = y;
-
-            Value = valueFunction.Compute(x, y);
-
-            var rangeToExtremum = valueFunction.Extremum.Value - Value;
-            rangeToExtremum *= rangeToExtremum < 0 ? -1 : 1;
-            ValueIndex = 1 / ((float)rangeToExtremum + 1);
+            ValueDecoder = valueDecoder;
+            Chromosome = new Chromosome(xSegment, valueDecoder.SegmentsBitLength) + new Chromosome(ySegment, valueDecoder.SegmentsBitLength);
+            ValueFunction = valueFunction;
         }
 
-        public Entity(BitArray bits, IFunction valueFunction)
+        private Entity(Chromosome chromosome, ChromosomeDecoder valueDecoder, IFunction valueFunction)
         {
-            var parts = new int[2];
-            bits.CopyTo(parts, 0);
-
-            X = ((float)parts[0]) / (1_000_000);
-            Y = ((float)parts[1]) / (1_000_000);
-
-            Value = valueFunction.Compute(X, Y);
-
-            var rangeToExtremum = valueFunction.Extremum.Value - Value;
-            rangeToExtremum *= rangeToExtremum < 0 ? -1 : 1;
-            ValueIndex = 1 / ((float)rangeToExtremum + 1);
+            Chromosome = chromosome;
+            ValueDecoder = valueDecoder;
+            ValueFunction = valueFunction;
         }
 
-        public BitArray GetBytes()
+        public Entity Reproduct(Chromosome reproductedChromosome)
         {
-            int xNormalized = (short)(X * (1_000_000));
-            int yNormalized = (short)(Y * (1_000_000));
+            if (reproductedChromosome.Genes.Length != Chromosome.Genes.Length)
+                throw new System.InvalidOperationException();
 
-            return new BitArray(new [] { xNormalized, yNormalized });
+            return new Entity(reproductedChromosome, ValueDecoder, ValueFunction);
+        }
+
+        public float ValueX {
+            get
+            {
+                return ValueDecoder.DecodeToValue((Chromosome / 2)[0]);
+            }
+        }
+
+        public float ValueY
+        {
+            get
+            {
+                return ValueDecoder.DecodeToValue((Chromosome / 2)[1]);
+            }
+        }
+
+        public float ValueZ
+        {
+            get
+            {
+                return (float)ValueFunction.Compute(ValueX, ValueY);
+            }
+        }
+
+        public float ValueIndex
+        {
+            get
+            {
+                return ComputeValueIndex(ValueFunction, ValueZ);
+            }
+        }
+
+        private static float ComputeValueIndex(IFunction valueFunction, double value)
+        {
+            var rangeToExtremum = valueFunction.Extremum.Value - value;
+            rangeToExtremum *= rangeToExtremum < 0 ? -1 : 1;
+            return 1 / ((float)rangeToExtremum + 1);
         }
     }
 }
