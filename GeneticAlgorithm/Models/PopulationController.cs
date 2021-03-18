@@ -1,33 +1,75 @@
-﻿using GeneticAlgorithm.Functions;
+﻿using GeneticAlgorithm.Crossovers;
+using GeneticAlgorithm.Functions;
+using GeneticAlgorithm.Mutation;
 using GeneticAlgorithm.Selections;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GeneticAlgorithm.Models
 {
     class PopulationController
     {
-        public List<Entity> Population { get; set; } = new ();
+        public List<Entity> Population { get; private set; }
+        private IFunction ValueFunction;
+        private ICrossover CrossoverMethod;
+        private IMutation MutationMethod;
+        private ISelector SelectionMethod;
 
-        public PopulationController()
+        private uint Precision;
+        private float MinValue;
+        private float MaxValue;
+
+        private uint PopulationSize;
+
+        public PopulationController(IFunction valueFunction, ICrossover crossoverMethod, IMutation mutationMethod, ISelector selectionMethod, uint precision, float minValue, float maxValue, uint populationSize)
         {
-            var rand = new Random((int)DateTime.Now.ToFileTime());
-            var function = new StyblinskiTangFunction();
+            ValueFunction = valueFunction;
+            CrossoverMethod = crossoverMethod;
+            MutationMethod = mutationMethod;
+            SelectionMethod = selectionMethod;
+            Precision = precision;
+            MinValue = minValue;
+            MaxValue = maxValue;
+            PopulationSize = populationSize;
+        }
 
-            for (int i = 0; i < 20; i++)
+        public void StartEvolution(uint epochs)
+        {
+            InitPopulation();
+
+            for (int i = 0; i < epochs; i++)
             {
-                Population.Add(new Entity(
-                    (float)rand.NextDouble() * 10 - 5,
-                    (float)rand.NextDouble() * 10 - 5,
-                    function
-                ));
+                Evolve();
             }
+        }
 
-            var selected = new RouletteSelector().Select(Population, 0.25f, out IEnumerable<Entity> restOfPopulation).ToArray();
-            var rest = restOfPopulation.ToArray();
+        private void InitPopulation()
+        {
+            Population = new();
+            var decoder = new ChromosomeDecoder(Precision, MinValue, MaxValue);
+            var generator = new EntityGenerator(decoder, ValueFunction);
+
+            for (int i = 0; i < PopulationSize; i++)
+            {
+                Population.Add(generator.GetNext());
+            }
+        }
+
+        private void Evolve()
+        {
+            var selectedPopulation = SelectionMethod.Select(Population, out var restOfPopulation);
+
+            var crossoveredPopulation = CrossoverMethod.Crossover(selectedPopulation);
+
+            var mutatedPopulation = MutationMethod.Mutate(crossoveredPopulation);
+
+            var strongestEntities = Population.OrderByDescending(e => e.ValueIndex).Take(Population.Count - mutatedPopulation.Count());
+
+            var finalPopulation = new List<Entity>();
+            finalPopulation.AddRange(mutatedPopulation);
+            finalPopulation.AddRange(strongestEntities);
+
+            Population = finalPopulation;
         }
     }
 }
