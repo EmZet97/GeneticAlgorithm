@@ -2,7 +2,7 @@
 {
     public class StyblinskiTangFunction : IFunction
     {
-        public Extremum Extremum => new (false, -39.16599f * 2);
+        public Extremum Extremum => new (false, -39.16599f * 2, -2.903534f, -2.903534f);
 
         public double Compute(double x, double y)
         {

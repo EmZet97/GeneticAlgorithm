@@ -6,5 +6,5 @@
         public Extremum Extremum { get; }
     }
 
-    public record Extremum(bool IsMaximum, float Value);
+    public record Extremum(bool IsMaximum, float Value, float X, float Y);
 }
