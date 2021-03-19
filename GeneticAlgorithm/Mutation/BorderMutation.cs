@@ -18,7 +18,7 @@ namespace GeneticAlgorithm.Mutation
         {
             var mutatedPopulation = new List<Entity>();
 
-            foreach(var entity in mutatedPopulation)
+            foreach(var entity in population)
             {
                 if (new Random().NextDouble() <= Probability)
                 {
