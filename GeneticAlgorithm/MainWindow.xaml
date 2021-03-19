@@ -4,9 +4,41 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeneticAlgorithm"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts" 
+        xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+        Title="MainWindow" Height="500" Width="800">
+    <StackPanel>
+        <Button Content="Start" Name="StartButton" Click="Start_Click"/>
+        <Button Content="Stop" IsEnabled="False" Name="StopButton" Click="StopButton_Click"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <oxy:Plot Grid.Column="0" Title="" Name="Chart" IsManipulationEnabled="False" IsEnabled="False" Height="400">
+                <oxy:Plot.Series >
+                    <oxy:LineSeries Name="Line1"/>
+                    <oxy:LineSeries Name="Line2"/>
+                </oxy:Plot.Series>
+            </oxy:Plot>
+        </StackPanel>   
+        <StackPanel Grid.Column="1">
+                <oxy:Plot Title="" Name="Chart2" IsManipulationEnabled="False" Height="400">
+                    <oxy:Plot.Axes>
+                        <oxy:LinearAxis Position="Bottom" Minimum="-5" Maximum="5" />
+                        <oxy:LinearAxis Position="Left" Minimum="-5" Maximum="5" />
+                    </oxy:Plot.Axes>
+                    <oxy:Plot.Series >
+                        <oxy:ScatterSeries Name="FinalPoint" MarkerType="Circle"/>
+                        <oxy:ScatterSeries Name="Points" Color="Red" MarkerType="Circle"/>
+                    </oxy:Plot.Series>
+                </oxy:Plot>
+                <Label Name="EpochNumber" Content="0" HorizontalAlignment="Center"/>
+                <ScrollBar IsEnabled="False" x:Name="EpochSlider" Orientation="Horizontal" Maximum="100" Minimum="0" Value="0" ValueChanged="EpochSlider_ValueChanged" ></ScrollBar>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 </Window>

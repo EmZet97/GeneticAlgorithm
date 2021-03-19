@@ -2,15 +2,18 @@
 using GeneticAlgorithm.Functions;
 using GeneticAlgorithm.Mutation;
 using GeneticAlgorithm.Selections;
+using OxyPlot;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GeneticAlgorithm.Models
 {
     class PopulationController
     {
         public List<Entity> Population { get; private set; }
-        private IFunction ValueFunction;
+        private EvolutionResult results = new();
+        public readonly IFunction ValueFunction;
         private ICrossover CrossoverMethod;
         private IMutation MutationMethod;
         private ISelector SelectionMethod;
@@ -33,13 +36,13 @@ namespace GeneticAlgorithm.Models
             PopulationSize = populationSize;
         }
 
-        public void StartEvolution(uint epochs)
+        public IEnumerable<EvolutionResult> StartEvolution(uint epochs)
         {
             InitPopulation();
 
             for (int i = 0; i < epochs; i++)
             {
-                Evolve();
+                yield return Evolve(i);
             }
         }
 
@@ -55,7 +58,7 @@ namespace GeneticAlgorithm.Models
             }
         }
 
-        private void Evolve()
+        private EvolutionResult Evolve(int epoch)
         {
             var selectedPopulation = SelectionMethod.Select(Population, out var restOfPopulation);
 
@@ -69,7 +72,20 @@ namespace GeneticAlgorithm.Models
             finalPopulation.AddRange(mutatedPopulation);
             finalPopulation.AddRange(strongestEntities);
 
+            Population.Clear();
             Population = finalPopulation;
+
+            var average = finalPopulation.Select(e => e.ValueIndex).Average();
+            var max = finalPopulation.Select(e => e.ValueIndex).Max();
+
+            var result = new EvolutionResult()
+            {
+                Best = new DataPoint(epoch, max),
+                Indexes = new DataPoint(epoch, average),
+                Points = finalPopulation.Select(x => new Point(x.ValueX, x.ValueY)).ToArray()
+            };
+
+            return result;
         }
     }
 }
