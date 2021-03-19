@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GeneticAlgorithm.Crossovers
 {
-    class OnePointCrossover : ICrossover
+    public class OnePointCrossover : ICrossover
     {
         public float Probability { get; init; }
 
@@ -41,7 +41,7 @@ namespace GeneticAlgorithm.Crossovers
 
         private static void CrossoverEntities(ref Entity entity1, ref Entity entity2)
         {
-            var dividePoint = (uint)(new Random().Next() * entity1.Chromosome.Genes.Length);
+            var dividePoint = (uint)(new Random().NextDouble() * entity1.Chromosome.Genes.Length);
             var chromosome1Parts = new[] { entity1.Chromosome.Extract(0, dividePoint), entity1.Chromosome.Extract(dividePoint, (uint)entity1.Chromosome.Genes.Length) };
             var chromosome2Parts = new[] { entity2.Chromosome.Extract(0, dividePoint), entity2.Chromosome.Extract(dividePoint, (uint)entity2.Chromosome.Genes.Length) };
 
