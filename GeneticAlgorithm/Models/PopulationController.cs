@@ -60,29 +60,29 @@ namespace GeneticAlgorithm.Models
 
         private EvolutionResult Evolve(int epoch)
         {
-            var selectedPopulation = SelectionMethod.Select(Population, out var restOfPopulation);
+            var selectedPopulation = SelectionMethod.Select(Population);
 
-            var crossoveredPopulation = CrossoverMethod.Crossover(selectedPopulation);
+            var crossoveredPopulation = CrossoverMethod.Crossover(selectedPopulation, Population.Count);
 
             var mutatedPopulation = MutationMethod.Mutate(crossoveredPopulation);
 
-            var strongestEntities = Population.OrderByDescending(e => e.ValueIndex).Take(Population.Count - mutatedPopulation.Count());
+            //var strongestEntities = Population.OrderByDescending(e => e.ValueIndex).Take(Population.Count - mutatedPopulation.Count());
 
-            var finalPopulation = new List<Entity>();
-            finalPopulation.AddRange(mutatedPopulation);
-            finalPopulation.AddRange(strongestEntities);
+            //var finalPopulation = new List<Entity>();
+            //finalPopulation.AddRange(mutatedPopulation);
+            //finalPopulation.AddRange(strongestEntities);
 
             Population.Clear();
-            Population = finalPopulation;
+            Population = mutatedPopulation.ToList();
 
-            var average = finalPopulation.Select(e => e.ValueIndex).Average();
-            var max = finalPopulation.Select(e => e.ValueIndex).Max();
+            var average = Population.Select(e => e.ValueIndex).Average();
+            var max = Population.Select(e => e.ValueIndex).Max();
 
             var result = new EvolutionResult()
             {
                 Best = new DataPoint(epoch, max),
                 Indexes = new DataPoint(epoch, average),
-                Points = finalPopulation.Select(x => new Point(x.ValueX, x.ValueY)).ToArray()
+                Points = Population.Select(x => new Point(x.ValueX, x.ValueY)).ToArray()
             };
 
             return result;

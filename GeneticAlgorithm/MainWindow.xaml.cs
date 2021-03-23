@@ -14,6 +14,8 @@ using System.Windows.Media;
 using OxyPlot;
 using System.Threading;
 using OxyPlot.Series;
+using System.Text.RegularExpressions;
+using GeneticAlgorithm.Helpers;
 
 namespace GeneticAlgorithm
 {
@@ -21,9 +23,27 @@ namespace GeneticAlgorithm
     {
         private List<EvolutionResult> EvolutionResults = new();
         private bool process = false;
+        private readonly PopulationControllerBuilder controllerBuilder = new ();
         public MainWindow()
         {
             InitializeComponent();
+
+            Init();
+
+            SelectorDropDown.ItemsSource = new[] { "Rank Selection", "Roulette Selection", "Turnament Selection" };
+            SelectorDropDown.SelectedIndex = 0;
+
+
+        }
+
+        private void Init()
+        {
+            controllerBuilder
+                .AddSelectionMethod(new RouletteSelector(0.3f))
+                .AddCrossoverMethod(new OnePointCrossover(0.8f))
+                .AddMutationMethod(new BorderMutation(0.2f))
+                .AddValueFunction(new StyblinskiTangFunction())
+                .AddPrecision(2048, -5f, 5f);
         }
 
         private void EpochSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -49,17 +69,15 @@ namespace GeneticAlgorithm
         }
 
         private void Start()
-        {
-            var controllerBuilder = new PopulationControllerBuilder();
+        {            
             process = true;
 
             var controller = controllerBuilder
-                .AddSelectionMethod(new RouletteSelector(0.1f))
                 .AddCrossoverMethod(new OnePointCrossover(0.8f))
-                .AddMutationMethod(new BorderMutation(0.0f))
+                .AddMutationMethod(new BorderMutation(0.5f))
                 .AddValueFunction(new StyblinskiTangFunction())
-                .AddPrecision(2048, -5f, 5f)
-                .Build(100);
+                .AddPrecision(8192, -5f, 5f)
+                .Build(200);
 
             EvolutionResults.Clear();
             int i = 0;
@@ -73,7 +91,7 @@ namespace GeneticAlgorithm
 
                 EvolutionResults.Add(result);
 
-                if(i % 100 == 0)
+                if(i % 1 == 0)
                 {
                     Dispatcher.Invoke(() => {
                         Line1.ItemsSource = EvolutionResults.Select(r => r.Indexes);
@@ -119,6 +137,47 @@ namespace GeneticAlgorithm
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             process = false;
+        }
+
+        private void SelectorDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetSelectorMethod();
+        }
+
+        private void SelectorProbabilityTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void SelectorProbabilityTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var correctRange = PercentRangeParser.TryParse(SelectorProbabilityTextBox.Text, out int percent);
+
+            if (!correctRange)
+            {
+                SelectorProbabilityTextBox.Text = percent.ToString();
+            }
+
+            SetSelectorMethod();
+        }
+
+        private void SetSelectorMethod()
+        {
+            _ = PercentRangeParser.TryParse(SelectorProbabilityTextBox.Text, out int percent);
+            float probability = .01f * percent;
+            switch (SelectorDropDown.SelectedIndex)
+            {
+                case 0:
+                    controllerBuilder.AddSelectionMethod(new RankSelector(probability));
+                    break;
+                case 1:
+                    controllerBuilder.AddSelectionMethod(new RouletteSelector(probability));
+                    break;
+                default:
+                    controllerBuilder.AddSelectionMethod(new TurnamentSelector(probability));
+                    break;
+            }
         }
     }
 }
