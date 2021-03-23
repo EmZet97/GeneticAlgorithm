@@ -14,29 +14,30 @@ namespace GeneticAlgorithm.Crossovers
             Probability = probablilty;
         }
 
-        public IEnumerable<Entity> Crossover(IEnumerable<Entity> population)
+        public IEnumerable<Entity> Crossover(IEnumerable<Entity> population, int finalPopulationSize)
         {
             var processedPopulation = population.ToList();
-            var crossedPopulation = new List<Entity>();
+            var finalPopulation = new List<Entity>();
 
             var random = new Random();
-            for (int i = 0; i < population.Count() / 2; i++)
+            while(finalPopulation.Count < finalPopulationSize)
             {
-                var first = processedPopulation[random.Next(0, processedPopulation.Count)];
-                processedPopulation.Remove(first);
-                var second = processedPopulation[random.Next(0, processedPopulation.Count)];
-                processedPopulation.Remove(second);
+                if (random.NextDouble() > Probability)
+                    continue;
 
-                if(random.NextDouble() <= Probability)
-                    CrossoverEntities(ref first, ref second);
+                var currentPopulation = processedPopulation.ToArray().ToList();
+                var first = currentPopulation[random.Next(0, currentPopulation.Count)];
+                currentPopulation.Remove(first);
+                var second = currentPopulation[random.Next(0, currentPopulation.Count)];
 
-                crossedPopulation.Add(first);
-                crossedPopulation.Add(second);
+                CrossoverEntities(ref first, ref second);
+
+                finalPopulation.AddRange(new[] { first, second });
             }
 
-            crossedPopulation.AddRange(processedPopulation);
+            finalPopulation.AddRange(processedPopulation);
 
-            return crossedPopulation;
+            return finalPopulation.Take(finalPopulationSize);
         }
 
         private static void CrossoverEntities(ref Entity entity1, ref Entity entity2)

@@ -6,6 +6,6 @@ namespace GeneticAlgorithm.Crossovers
     interface ICrossover
     {
         public float Probability { get; init; }
-        IEnumerable<Entity> Crossover(IEnumerable<Entity> population);
+        IEnumerable<Entity> Crossover(IEnumerable<Entity> population, int finalPopulationSize);
     }
 }
