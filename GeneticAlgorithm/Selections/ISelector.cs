@@ -6,6 +6,6 @@ namespace GeneticAlgorithm.Selections
     interface ISelector
     {
         public float Probability { get; init; }
-        IEnumerable<Entity> Select(IEnumerable<Entity> population, out IEnumerable<Entity> restOfPopulation);
+        IEnumerable<Entity> Select(IEnumerable<Entity> population);
     }
 }
