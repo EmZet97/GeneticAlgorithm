@@ -5,24 +5,26 @@ using GeneticAlgorithm.Selections;
 using OxyPlot;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GeneticAlgorithm.Models
 {
     class PopulationController
     {
         public List<Entity> Population { get; private set; }
-        private EvolutionResult results = new();
+        private uint CurrentEpoch = 0;
+
         public readonly IFunction ValueFunction;
-        private ICrossover CrossoverMethod;
-        private IMutation MutationMethod;
-        private ISelector SelectionMethod;
+        private readonly ICrossover CrossoverMethod;
+        private readonly IMutation MutationMethod;
+        private readonly ISelector SelectionMethod;
 
-        private uint Precision;
-        private float MinValue;
-        private float MaxValue;
+        private readonly uint Precision;
+        private readonly float MinValue;
+        private readonly float MaxValue;
 
-        private uint PopulationSize;
+        private readonly uint PopulationSize;
+
+        public PopulationController() { }
 
         public PopulationController(IFunction valueFunction, ICrossover crossoverMethod, IMutation mutationMethod, ISelector selectionMethod, uint precision, float minValue, float maxValue, uint populationSize)
         {
@@ -39,16 +41,19 @@ namespace GeneticAlgorithm.Models
         public IEnumerable<EvolutionResult> StartEvolution(uint epochs)
         {
             InitPopulation();
+            yield return GetEvolutionResult();
 
             for (int i = 0; i < epochs; i++)
             {
-                yield return Evolve(i);
+                yield return Evolve();
             }
         }
 
         private void InitPopulation()
         {
             Population = new();
+            CurrentEpoch = 0;
+
             var decoder = new ChromosomeDecoder(Precision, MinValue, MaxValue);
             var generator = new EntityGenerator(decoder, ValueFunction);
 
@@ -58,13 +63,21 @@ namespace GeneticAlgorithm.Models
             }
         }
 
-        private EvolutionResult Evolve(int epoch)
+        private EvolutionResult Evolve()
         {
-            var selectedPopulation = SelectionMethod.Select(Population);
+            var processedPopulation = SelectionMethod.Select(Population);
 
-            var crossoveredPopulation = CrossoverMethod.Crossover(selectedPopulation, Population.Count);
+            if (processedPopulation.Any())
+            {
+                var crossoveredPopulation = CrossoverMethod.Crossover(processedPopulation, Population.Count);
+                var mutatedPopulation = MutationMethod.Mutate(crossoveredPopulation);
+                processedPopulation = mutatedPopulation;
+            }
+            else
+            {
+                processedPopulation = Population.ToArray();
+            }
 
-            var mutatedPopulation = MutationMethod.Mutate(crossoveredPopulation);
 
             //var strongestEntities = Population.OrderByDescending(e => e.ValueIndex).Take(Population.Count - mutatedPopulation.Count());
 
@@ -73,15 +86,21 @@ namespace GeneticAlgorithm.Models
             //finalPopulation.AddRange(strongestEntities);
 
             Population.Clear();
-            Population = mutatedPopulation.ToList();
+            Population = processedPopulation.ToList();
+            CurrentEpoch += 1;
 
+            return GetEvolutionResult();
+        }
+
+        private EvolutionResult GetEvolutionResult()
+        {
             var average = Population.Select(e => e.ValueIndex).Average();
             var max = Population.Select(e => e.ValueIndex).Max();
 
             var result = new EvolutionResult()
             {
-                Best = new DataPoint(epoch, max),
-                Indexes = new DataPoint(epoch, average),
+                Best = new DataPoint(CurrentEpoch, max),
+                Indexes = new DataPoint(CurrentEpoch, average),
                 Points = Population.Select(x => new Point(x.ValueX, x.ValueY)).ToArray()
             };
 

@@ -16,12 +16,21 @@ namespace GeneticAlgorithm.Crossovers
 
         public IEnumerable<Entity> Crossover(IEnumerable<Entity> population, int finalPopulationSize)
         {
+            if (!population.Any())
+                return population;
+
             var processedPopulation = population.ToList();
             var finalPopulation = new List<Entity>();
 
             var random = new Random();
             while(finalPopulation.Count < finalPopulationSize)
             {
+                if (population.Count() < 2)
+                {
+                    finalPopulation.AddRange(processedPopulation);
+                    continue;
+                }
+
                 if (random.NextDouble() > Probability)
                     continue;
 

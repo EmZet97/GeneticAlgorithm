@@ -13,11 +13,11 @@ namespace GeneticAlgorithm.Models
         {
             var precisionLog = Math.Log2(precision);
             var isPrecisionReound = precisionLog % 1 == 0;
-            SegmentsBitLength = (uint)precisionLog - (uint)(isPrecisionReound ? 1 : 0);
-            SegmentsCount = (uint)Math.Pow(2, SegmentsBitLength + 1);
+            SegmentsBitLength = (uint)precisionLog + (uint)(isPrecisionReound ? 0 : 1);
+            SegmentsCount = (uint)Math.Pow(2, SegmentsBitLength);
 
             MinValue = minValue;
-            SingleSegmentLength = (maxValue - minValue) / SegmentsCount;
+            SingleSegmentLength = (maxValue - minValue) / (SegmentsCount - 1);
         }
 
         public float DecodeToValue(Chromosome bits)

@@ -23,7 +23,7 @@ namespace GeneticAlgorithm.Models
             for (int i = 0; i < Genes.Length; i++) 
                 if (Genes[i]) number |= 1 << (Genes.Length - i);
 
-            return number;
+            return number/2;
         }
 
         private static List<bool> ConvertToBitList(uint number, uint length)
