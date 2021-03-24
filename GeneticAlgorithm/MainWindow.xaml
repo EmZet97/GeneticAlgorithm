@@ -8,22 +8,95 @@
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800">
+        Title="MainWindow" Height="600" Width="800" Background="#414042" MinWidth="800" MinHeight="600">
     <StackPanel>
-        <Grid>
+        <Grid Margin="10">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Column="0"  Content="Chromosome bit length:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="1" Name="ChromosomeBitLengthTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="ChromosomeBitLengthTextBox_TextChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Population size:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" Name="PopulationSizeTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="PopulationSizeTextBox_TextChanged"/>
+        </Grid>
+        
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" Name="SelectorDropDown" SelectionChanged="SelectorDropDown_SelectionChanged" Margin="5"/>
-            <Label Grid.Column="1"  Content="Percent of population:" Margin="5" HorizontalContentAlignment="Right"/>
-            <TextBox Grid.Column="2" x:Name="SelectorProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" TextChanged="SelectorProbabilityTextBox_TextChanged" Margin="5"/>
+            <Label Foreground="#E6E7E8" Grid.Row="0" FontWeight="Bold" Content="Selection method:"/>
+            <ComboBox Grid.Column="1" Name="SelectorDropDown" SelectionChanged="SelectorDropDown_SelectionChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Percent of population:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" x:Name="SelectorProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="SelectorProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Row="0" FontWeight="Bold" Content="Crossover method:"/>
+            <ComboBox Grid.Column="1" Name="CrossoverDropDown" SelectionChanged="CrossoverDropDown_SelectionChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Crossover probability:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" Name="CrossoverProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="CrossoverProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Row="0" FontWeight="Bold" Content="Mutation method:"/>
+            <ComboBox Grid.Column="1" Name="MutationDropDown" SelectionChanged="MutationDropDown_SelectionChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Mutation probability:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" Name="MutationProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="MutationProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Column="0"  Content="Inversion probability:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="1" Name="InversionProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="InversionProbabilityTextBox_TextChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Elitist strategy percent:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" Name="ElitistStrategyProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="ElitistStrategyProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Column="1" Content="Number of epochs:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="2" Name="NumberOfEpochsTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="NumberOfEpochsTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Content="Start" Name="StartButton" Click="Start_Click"/>
+            <Button Grid.Column="2" Content="Stop" IsEnabled="False" Name="StopButton" Click="StopButton_Click"/>
         </Grid>
         
-
-        <Button Content="Start" Name="StartButton" Click="Start_Click"/>
-        <Button Content="Stop" IsEnabled="False" Name="StopButton" Click="StopButton_Click"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
