@@ -1,4 +1,5 @@
 ﻿using GeneticAlgorithm.Functions;
+using System.Linq;
 
 namespace GeneticAlgorithm.Models
 {
@@ -28,6 +29,20 @@ namespace GeneticAlgorithm.Models
                 throw new System.InvalidOperationException();
 
             return new Entity(reproductedChromosome, ValueDecoder, ValueFunction);
+        }
+
+        public Entity Reproduct(Chromosome[] reproductedChromosomes)
+        {
+            if (reproductedChromosomes.Select(x => x.Genes.Length).Sum() != Chromosome.Genes.Length)
+                throw new System.InvalidOperationException();
+
+            var finalChromosome = new Chromosome(System.Array.Empty<bool>());
+            foreach(var gene in reproductedChromosomes)
+            {
+                finalChromosome += gene;
+            }
+
+            return new Entity(finalChromosome, ValueDecoder, ValueFunction);
         }
 
         public float ValueX {

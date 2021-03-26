@@ -65,5 +65,12 @@ namespace GeneticAlgorithm.Models
 
             return new Chromosome(seperatedGenes.ToArray());
         }
+
+        public Chromosome Extract(uint index)
+        {
+            var seperatedGenes = Genes.Skip((int)index).Take(1);
+
+            return new Chromosome(seperatedGenes.ToArray());
+        }
     }
 }
