@@ -126,7 +126,7 @@ namespace GeneticAlgorithm
             _ = ValueParser.TryIntParse(MutationProbabilityTextBox.Text, out var mutationPercent);
             var mutationMethodIndex = MutationDropDown.SelectedIndex;
             var mutationProbability = (float)mutationPercent / 100;
-            var mutationMethod = new List<IMutation> { new BorderMutation(mutationProbability), new BorderMutation(mutationProbability), new BorderMutation(mutationProbability) }[mutationMethodIndex];
+            var mutationMethod = new List<IMutation> { new OnePointMutation(mutationProbability), new TwoPointsMutation(mutationProbability), new BorderMutation(mutationProbability) }[mutationMethodIndex];
 
 
             _ = ValueParser.TryIntParse(CrossoverProbabilityTextBox.Text, out var crossoverPercent);
