@@ -13,6 +13,8 @@ using System.Threading;
 using OxyPlot.Series;
 using System.Text.RegularExpressions;
 using GeneticAlgorithm.Helpers;
+using GeneticAlgorithm.Extractors;
+using GeneticAlgorithm.Other;
 
 namespace GeneticAlgorithm
 {
@@ -134,12 +136,16 @@ namespace GeneticAlgorithm
             var crossoverProbability = (float)crossoverPercent / 100;
             var crossoverMethod = new List<ICrossover> { new OnePointCrossover(crossoverProbability), new TwoPointsCrossover(crossoverProbability), new ThreePointsCrossover(crossoverProbability), new HomogeneousCrossover(crossoverProbability) }[crossoverMethodIndex];
 
-            //_ = ValueParser.TryIntParse(InversionProbabilityTextBox.Text, out var inversionProbability);
-            //_ = ValueParser.TryIntParse(ElitistStrategyProbabilityTextBox.Text, out var elitStrategPercent);
-            _ = ValueParser.TryIntParse(NumberOfEpochsTextBox.Text, out var numberOfEpochs);
+            _ = ValueParser.TryIntParse(InversionProbabilityTextBox.Text, out var inversionPercent);
+            var inversionProbability = (float)inversionPercent / 100;
+            _ = ValueParser.TryIntParse(ElitistStrategyProbabilityTextBox.Text, out var extractionPercent);
+            var extractorPercent = (float)extractionPercent / 100;
+            //_ = ValueParser.TryIntParse(NumberOfEpochsTextBox.Text, out var numberOfEpochs);
 
             var controller = new PopulationControllerBuilder()
                 .AddValueFunction(new StyblinskiTangFunction())
+                .AddExtractor(new ElitistStrategyExtractor(extractorPercent))
+                .AddOtherProcessor(new InversionProcessor(inversionProbability))
                 .AddPrecision(chromosomeBits, -5f, 5f)
                 .AddSelectionMethod(selectionMethod)
                 .AddCrossoverMethod(crossoverMethod)
@@ -303,9 +309,10 @@ namespace GeneticAlgorithm
             var correctValue = ValueParser.TryIntParse(ElitistStrategyProbabilityTextBox.Text, out int percent);
             _ = ValueParser.TryIntParse(SelectorProbabilityTextBox.Text, out int percentOfSelection);
 
-            if (!correctValue || percent != Math.Clamp(percent, 0, 100 - percentOfSelection))
+            if (!correctValue || percent != Math.Clamp(percent, 0, 100 - percentOfSelection) || percent != Math.Clamp(percent, 0, 10))
             {
                 percent = Math.Clamp(percent, 0, 100 - percentOfSelection);
+                percent = Math.Clamp(percent, 0, 10);
                 ElitistStrategyProbabilityTextBox.Text = percent.ToString();
             }
         }

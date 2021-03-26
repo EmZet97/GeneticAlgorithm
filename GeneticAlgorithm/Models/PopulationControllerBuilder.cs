@@ -1,6 +1,8 @@
 ﻿using GeneticAlgorithm.Crossovers;
+using GeneticAlgorithm.Extractors;
 using GeneticAlgorithm.Functions;
 using GeneticAlgorithm.Mutation;
+using GeneticAlgorithm.Other;
 using GeneticAlgorithm.Selections;
 
 namespace GeneticAlgorithm.Models
@@ -8,6 +10,8 @@ namespace GeneticAlgorithm.Models
     class PopulationControllerBuilder
     {
         private IFunction ValueFunction;
+        private IExtractor Extractor;
+        private IOtherProcessor OtherProcessor;
         private ICrossover CrossoverMethod;
         private IMutation MutationMethod;
         private ISelector SelectionMethod;
@@ -19,6 +23,20 @@ namespace GeneticAlgorithm.Models
         public PopulationControllerBuilder AddValueFunction(IFunction function)
         {
             ValueFunction = function;
+
+            return this;
+        }
+
+        public PopulationControllerBuilder AddExtractor(IExtractor extractor)
+        {
+            Extractor = extractor;
+
+            return this;
+        }
+
+        public PopulationControllerBuilder AddOtherProcessor(IOtherProcessor processor)
+        {
+            OtherProcessor = processor;
 
             return this;
         }
@@ -55,7 +73,7 @@ namespace GeneticAlgorithm.Models
 
         public PopulationController Build(uint populationSize)
         {
-            return new PopulationController(ValueFunction, CrossoverMethod, MutationMethod, SelectionMethod, 
+            return new PopulationController(ValueFunction, Extractor, OtherProcessor, CrossoverMethod, MutationMethod, SelectionMethod, 
                 Precision, MinValue, MaxValue, populationSize);
         }
     }

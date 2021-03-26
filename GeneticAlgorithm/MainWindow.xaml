@@ -8,7 +8,7 @@
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" Background="#414042" MinWidth="800" MinHeight="600">
+        Title="MainWindow" Height="818" Width="833" Background="#414042" MinWidth="800" MinHeight="800">
     <StackPanel>
         <Grid Margin="10">
             <Grid.ColumnDefinitions>
@@ -22,7 +22,7 @@
             <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Population size:" HorizontalContentAlignment="Right"/>
             <TextBox Grid.Column="3" Name="PopulationSizeTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="PopulationSizeTextBox_TextChanged"/>
         </Grid>
-        
+
         <Grid Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
@@ -96,22 +96,22 @@
             <Button Grid.Column="1" Content="Start" Name="StartButton" Click="Start_Click"/>
             <Button Grid.Column="2" Content="Stop" IsEnabled="False" Name="StopButton" Click="StopButton_Click"/>
         </Grid>
-        
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0">
-            <oxy:Plot Grid.Column="0" Title="" Name="Chart" IsManipulationEnabled="False" IsEnabled="False" Height="400">
-                <oxy:Plot.Series >
-                    <oxy:LineSeries Name="Line1"/>
-                    <oxy:LineSeries Name="Line2"/>
-                </oxy:Plot.Series>
-            </oxy:Plot>
-        </StackPanel>   
-        <StackPanel Grid.Column="1">
-                <oxy:Plot Title="" Name="Chart2" IsManipulationEnabled="False" Height="400">
+            <StackPanel Grid.Column="0">
+                <oxy:Plot Margin="5" Grid.Column="0" Title="" Name="Chart" IsManipulationEnabled="False" IsEnabled="False" Height="400">
+                    <oxy:Plot.Series >
+                        <oxy:LineSeries Name="Line1"/>
+                        <oxy:LineSeries Name="Line2"/>
+                    </oxy:Plot.Series>
+                </oxy:Plot>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <oxy:Plot Margin="5" Title="" Name="Chart2" IsManipulationEnabled="False" Height="400">
                     <oxy:Plot.Axes>
                         <oxy:LinearAxis Position="Bottom" Minimum="-5" Maximum="5" />
                         <oxy:LinearAxis Position="Left" Minimum="-5" Maximum="5" />

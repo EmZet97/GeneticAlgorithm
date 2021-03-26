@@ -1,6 +1,8 @@
 ﻿using GeneticAlgorithm.Crossovers;
+using GeneticAlgorithm.Extractors;
 using GeneticAlgorithm.Functions;
 using GeneticAlgorithm.Mutation;
+using GeneticAlgorithm.Other;
 using GeneticAlgorithm.Selections;
 using OxyPlot;
 using System.Collections.Generic;
@@ -13,10 +15,12 @@ namespace GeneticAlgorithm.Models
         public List<Entity> Population { get; private set; }
         private uint CurrentEpoch = 0;
 
-        public readonly IFunction ValueFunction;
-        private readonly ICrossover CrossoverMethod;
-        private readonly IMutation MutationMethod;
-        private readonly ISelector SelectionMethod;
+        public IFunction ValueFunction;
+        private IExtractor Extractor;
+        private IOtherProcessor OtherProcessor;
+        private ICrossover CrossoverMethod;
+        private IMutation MutationMethod;
+        private ISelector SelectionMethod;
 
         private readonly uint Precision;
         private readonly float MinValue;
@@ -26,9 +30,11 @@ namespace GeneticAlgorithm.Models
 
         public PopulationController() { }
 
-        public PopulationController(IFunction valueFunction, ICrossover crossoverMethod, IMutation mutationMethod, ISelector selectionMethod, uint precision, float minValue, float maxValue, uint populationSize)
+        public PopulationController(IFunction valueFunction, IExtractor extractor, IOtherProcessor processor, ICrossover crossoverMethod, IMutation mutationMethod, ISelector selectionMethod, uint precision, float minValue, float maxValue, uint populationSize)
         {
             ValueFunction = valueFunction;
+            Extractor = extractor;
+            OtherProcessor = processor;
             CrossoverMethod = crossoverMethod;
             MutationMethod = mutationMethod;
             SelectionMethod = selectionMethod;
@@ -65,28 +71,25 @@ namespace GeneticAlgorithm.Models
 
         private EvolutionResult Evolve()
         {
+            var extractedPopulation = Extractor.ExtractFrom(Population).ToArray();
             var processedPopulation = SelectionMethod.Select(Population);
 
             if (processedPopulation.Any())
             {
-                var crossoveredPopulation = CrossoverMethod.Crossover(processedPopulation, Population.Count);
+                var crossoveredPopulation = CrossoverMethod.Crossover(processedPopulation, Population.Count - extractedPopulation.Count());
                 var mutatedPopulation = MutationMethod.Mutate(crossoveredPopulation);
-                processedPopulation = mutatedPopulation;
+                var inversedPopulation = OtherProcessor.Process(mutatedPopulation);
+                processedPopulation = inversedPopulation;
             }
             else
             {
                 processedPopulation = Population.ToArray();
             }
 
-
-            //var strongestEntities = Population.OrderByDescending(e => e.ValueIndex).Take(Population.Count - mutatedPopulation.Count());
-
-            //var finalPopulation = new List<Entity>();
-            //finalPopulation.AddRange(mutatedPopulation);
-            //finalPopulation.AddRange(strongestEntities);
-
             Population.Clear();
-            Population = processedPopulation.ToList();
+            var finalPopulation = processedPopulation.ToList();
+            finalPopulation.AddRange(extractedPopulation);
+            Population = finalPopulation;
             CurrentEpoch += 1;
 
             return GetEvolutionResult();
