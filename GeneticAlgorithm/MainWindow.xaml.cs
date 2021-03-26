@@ -132,7 +132,7 @@ namespace GeneticAlgorithm
             _ = ValueParser.TryIntParse(CrossoverProbabilityTextBox.Text, out var crossoverPercent);
             var crossoverMethodIndex = CrossoverDropDown.SelectedIndex;
             var crossoverProbability = (float)crossoverPercent / 100;
-            var crossoverMethod = new List<ICrossover> { new OnePointCrossover(crossoverProbability), new OnePointCrossover(crossoverProbability), new OnePointCrossover(crossoverProbability), new OnePointCrossover(crossoverProbability) }[crossoverMethodIndex];
+            var crossoverMethod = new List<ICrossover> { new OnePointCrossover(crossoverProbability), new TwoPointsCrossover(crossoverProbability), new ThreePointsCrossover(crossoverProbability), new HomogeneousCrossover(crossoverProbability) }[crossoverMethodIndex];
 
             //_ = ValueParser.TryIntParse(InversionProbabilityTextBox.Text, out var inversionProbability);
             //_ = ValueParser.TryIntParse(ElitistStrategyProbabilityTextBox.Text, out var elitStrategPercent);
