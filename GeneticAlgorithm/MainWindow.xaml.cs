@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using GeneticAlgorithm.Helpers;
 using GeneticAlgorithm.Extractors;
 using GeneticAlgorithm.Other;
+using System.IO;
 
 namespace GeneticAlgorithm
 {
@@ -22,8 +23,7 @@ namespace GeneticAlgorithm
     {
         private List<EvolutionResult> EvolutionResults = new();
         private bool process = false;
-        private readonly PopulationControllerBuilder controllerBuilder = new ();
-        private int epochs;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -56,10 +56,21 @@ namespace GeneticAlgorithm
             NumberOfEpochsTextBox.Text = 5000.ToString();
         }
 
+        private void CountTime()
+        {
+            var time = DateTime.Now;
+            while (process)
+            {
+                Thread.Sleep(100);
+                Dispatcher.Invoke(() =>
+                {
+                    TimeCounter_Label.Content = $"{(DateTime.Now - time).Seconds}:{(int)((DateTime.Now - time).Milliseconds%1000)/100}";
+                });
+            }            
+        }
+
         private void Start()
         {
-            process = true;
-
             PopulationController controller = new();
             int epochsNumber = 0;
 
@@ -84,7 +95,8 @@ namespace GeneticAlgorithm
                 if (i % 1 == 0)
                 {
                     Dispatcher.Invoke(() => {
-                        DrawGraphs(controller);
+                        if (ProgressUpdate_CheckBox.IsChecked is true)
+                            DrawGraphs(controller);
                     });
                 }
 
@@ -101,17 +113,35 @@ namespace GeneticAlgorithm
                 EnableUI(true);
                 DrawGraphs(controller);
             });
+            process = false;
+            SaveToFile();
         }
 
         private void DrawGraphs(PopulationController controller)
         {
-            Line1.ItemsSource = EvolutionResults.Select(r => r.Indexes);
-            Line2.ItemsSource = EvolutionResults.Select(r => r.Best);
+            Line1.ItemsSource = EvolutionResults.Select(r => r.ResultsMeanIndex);
+            Line2.ItemsSource = EvolutionResults.Select(r => r.BestResultIndex);
+            Line3.ItemsSource = EvolutionResults.Select(r => r.StandardDeviation);
 
             var extremumPoint = controller.ValueFunction.Extremum;
             FinalPoint.ItemsSource = new[] { new ScatterPoint(extremumPoint.X, extremumPoint.Y, size: 10, value: 100) };
             EpochSlider.Maximum = EvolutionResults.Count - 1;
             EpochSlider.Value = EvolutionResults.Count - 1;
+
+            EpochNumber.Content = (int)EpochSlider.Value;
+
+            var epochPoints = EvolutionResults.Select(r => r.EpochPoints);
+            EpochPoints.ItemsSource = epochPoints.ToList()[(int)EpochSlider.Value].Select(p => new ScatterPoint(p.X, p.Y, size: 2, value: 100));
+            EpochPoints.MarkerType = MarkerType.Circle;
+        }
+
+        private void SaveToFile()
+        {
+            var simplifedResults = EvolutionResults.Select(r => r.Minimalize());
+            
+            DirectoryInfo di = Directory.CreateDirectory("Results");
+
+            CsvWriterHelper.WriteToFile($"Results\\Result({DateTime.Now.ToFileTime()}).csv", simplifedResults);
         }
 
         private PopulationController GatherUIData()
@@ -186,23 +216,29 @@ namespace GeneticAlgorithm
             Chart.IsEnabled = enable;
 
             EpochSlider.IsEnabled = enable;
+
+            ProgressUpdate_CheckBox.IsEnabled = enable;
         }
 
         private void EpochSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             EpochNumber.Content = (int)EpochSlider.Value;
 
-            var epochPoints = EvolutionResults.Select(r => r.Points);
-            Points.ItemsSource = epochPoints.ToList()[(int)EpochSlider.Value].Select(p => new ScatterPoint(p.X, p.Y, size: 2, value: 100));
-            Points.MarkerType = MarkerType.Circle;
+            var epochPoints = EvolutionResults.Select(r => r.EpochPoints);
+            EpochPoints.ItemsSource = epochPoints.ToList()[(int)EpochSlider.Value].Select(p => new ScatterPoint(p.X, p.Y, size: 2, value: 100));
+            EpochPoints.MarkerType = MarkerType.Circle;
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
             EnableUI(false);
+            process = true;
 
             var epochsThread = new Thread(new ThreadStart(Start));
             epochsThread.Start();
+
+            var timerThread = new Thread(new ThreadStart(CountTime));
+            timerThread.Start();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)

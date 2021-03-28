@@ -8,7 +8,7 @@
         xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="818" Width="833" Background="#414042" MinWidth="800" MinHeight="800">
+        Title="Genetic Algorithm" Height="850" Width="833" Background="#414042" MinWidth="800" MinHeight="850">
     <StackPanel>
         <Grid Margin="10">
             <Grid.ColumnDefinitions>
@@ -82,8 +82,10 @@
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Label Foreground="#E6E7E8" Grid.Column="1" Content="Number of epochs:" HorizontalContentAlignment="Right"/>
-            <TextBox Grid.Column="2" Name="NumberOfEpochsTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="NumberOfEpochsTextBox_TextChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="0" Content="Number of epochs:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="1" Name="NumberOfEpochsTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="NumberOfEpochsTextBox_TextChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2" Content="Progress update:" HorizontalContentAlignment="Right"/>
+            <CheckBox Grid.Column="3" Margin="5" x:Name="ProgressUpdate_CheckBox"/>
         </Grid>
 
         <Grid Margin="10">
@@ -97,28 +99,35 @@
             <Button Grid.Column="2" Content="Stop" IsEnabled="False" Name="StopButton" Click="StopButton_Click"/>
         </Grid>
 
+        <Label FontWeight="Bold" Foreground="Gold" FontSize="20" Content="" x:Name="TimeCounter_Label" HorizontalAlignment="Center"/>
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
-                <oxy:Plot Margin="5" Grid.Column="0" Title="" Name="Chart" IsManipulationEnabled="False" IsEnabled="False" Height="400">
+                <oxy:Plot Margin="5" Grid.Column="0" LegendBorder="Black" IsLegendVisible="True" LegendPosition="RightMiddle" LegendTitle="Legend" Title="Results in epochs" Name="Chart" IsManipulationEnabled="False" Height="400">
                     <oxy:Plot.Series >
-                        <oxy:LineSeries Name="Line1"/>
-                        <oxy:LineSeries Name="Line2"/>
+                        <oxy:LineSeries Name="Line1" Color="Red" Title="Results mean [0-1]"/>
+                        <oxy:LineSeries Name="Line2" Color="Blue" Title="Best result [0-1]"/>
+                        <oxy:LineSeries Name="Line3" Color="Green" Title="Standard deviation [0-1]"/>
                     </oxy:Plot.Series>
+                    <oxy:Plot.Axes>
+                        <oxy:LinearAxis Title="Epoch" Position="Bottom" Minimum="0" AbsoluteMinimum="0"/>
+                        <oxy:LinearAxis Title="Value Index" Position="Left" Minimum="0" Maximum="1.1" AbsoluteMaximum="1.1" AbsoluteMinimum="0" IsZoomEnabled="False"/>
+                    </oxy:Plot.Axes>
                 </oxy:Plot>
             </StackPanel>
             <StackPanel Grid.Column="1">
-                <oxy:Plot Margin="5" Title="" Name="Chart2" IsManipulationEnabled="False" Height="400">
+                <oxy:Plot Title="Points (x, y) in epochs" LegendBorder="Black" IsLegendVisible="True" LegendPosition="BottomRight" Margin="5" Name="Chart2" IsManipulationEnabled="False" Height="400">
                     <oxy:Plot.Axes>
-                        <oxy:LinearAxis Position="Bottom" Minimum="-5" Maximum="5" />
-                        <oxy:LinearAxis Position="Left" Minimum="-5" Maximum="5" />
+                        <oxy:LinearAxis Position="Bottom" Minimum="-5" Maximum="5" Title="X"/>
+                        <oxy:LinearAxis Position="Left" Minimum="-5" Maximum="5" Title="Y"/>
                     </oxy:Plot.Axes>
                     <oxy:Plot.Series >
-                        <oxy:ScatterSeries Name="FinalPoint" MarkerType="Circle"/>
-                        <oxy:ScatterSeries Name="Points" Color="Red" MarkerType="Circle"/>
+                        <oxy:ScatterSeries Name="FinalPoint" Color="Green" Title="Function extremum" MarkerType="Circle"/>
+                        <oxy:ScatterSeries Name="EpochPoints" Color="Red" Title="Epoch points" MarkerType="Circle"/>
                     </oxy:Plot.Series>
                 </oxy:Plot>
                 <Label Name="EpochNumber" Content="0" HorizontalAlignment="Center"/>

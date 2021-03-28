@@ -5,6 +5,7 @@ using GeneticAlgorithm.Mutation;
 using GeneticAlgorithm.Other;
 using GeneticAlgorithm.Selections;
 using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -100,11 +101,15 @@ namespace GeneticAlgorithm.Models
             var average = Population.Select(e => e.ValueIndex).Average();
             var max = Population.Select(e => e.ValueIndex).Max();
 
+            double sumOfSquaresOfDifferences = Population.Select(e => (e.ValueIndex - average) * (e.ValueIndex - average)).Sum();
+            double stdDev = Math.Sqrt(sumOfSquaresOfDifferences / Population.Count);
+
             var result = new EvolutionResult()
             {
-                Best = new DataPoint(CurrentEpoch, max),
-                Indexes = new DataPoint(CurrentEpoch, average),
-                Points = Population.Select(x => new Point(x.ValueX, x.ValueY)).ToArray()
+                BestResultIndex = new DataPoint(CurrentEpoch, max),
+                ResultsMeanIndex = new DataPoint(CurrentEpoch, average),
+                StandardDeviation = new DataPoint(CurrentEpoch, stdDev),
+                EpochPoints = Population.Select(x => new Point(x.ValueX, x.ValueY)).ToArray()
             };
 
             return result;
