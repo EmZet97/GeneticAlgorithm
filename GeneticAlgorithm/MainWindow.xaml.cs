@@ -64,7 +64,7 @@ namespace GeneticAlgorithm
                 Thread.Sleep(100);
                 Dispatcher.Invoke(() =>
                 {
-                    TimeCounter_Label.Content = $"{(DateTime.Now - time).Seconds}:{(int)((DateTime.Now - time).Milliseconds%1000)/100}";
+                    TimeCounter_Label.Content = $"{(DateTime.Now - time).Seconds}:{(int)((DateTime.Now - time).Milliseconds%1000)/100} seconds";
                 });
             }            
         }
@@ -81,7 +81,6 @@ namespace GeneticAlgorithm
             });
 
             EvolutionResults.Clear();
-            int i = 0;
             foreach (var result in controller.StartEvolution((uint)epochsNumber))
             {
                 if (!process)
@@ -92,15 +91,14 @@ namespace GeneticAlgorithm
 
                 EvolutionResults.Add(result);
 
-                if (i % 1 == 0)
+                if (DateTime.Now.Millisecond%50 == 0)
                 {
                     Dispatcher.Invoke(() => {
                         if (ProgressUpdate_CheckBox.IsChecked is true)
                             DrawGraphs(controller);
+                        UpdateCurrentStats(controller);
                     });
                 }
-
-                i++;
             }
 
             Finish(controller);
@@ -112,9 +110,17 @@ namespace GeneticAlgorithm
             {
                 EnableUI(true);
                 DrawGraphs(controller);
+                UpdateCurrentStats(controller);
             });
             process = false;
             SaveToFile();
+        }
+
+        private void UpdateCurrentStats(PopulationController controller)
+        {
+            var XY = EvolutionResults.Select(r => r.BestPointCoordinates);
+            BestValue_Label.Content = $"F({XY.Last().X.ToString("0.00")}, {XY.Last().Y.ToString("0.00")}) = {controller.ValueFunction.Compute(XY.Last().X, XY.Last().Y).ToString("0.00")}";
+            CurrentEpoch_Label.Content = EvolutionResults.Select(r => r.BestResultIndex).Last().X;
         }
 
         private void DrawGraphs(PopulationController controller)
