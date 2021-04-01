@@ -24,7 +24,7 @@ namespace GeneticAlgorithm.Selections
 
             foreach (var group in groups)
             {
-                var rank = group.OrderByDescending(e => e.ValueIndex);
+                var rank = group.OrderBy(e => e.ValueIndex);
                 winners.Add(rank.First());              
             }
 

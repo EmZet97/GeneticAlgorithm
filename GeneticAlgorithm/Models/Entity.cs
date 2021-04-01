@@ -80,7 +80,8 @@ namespace GeneticAlgorithm.Models
         {
             var rangeToExtremum = valueFunction.Extremum.Value - value;
             rangeToExtremum *= rangeToExtremum < 0 ? -1 : 1;
-            return 1 / ((float)rangeToExtremum + 1);
+
+            return ((float)rangeToExtremum);
         }
     }
 }

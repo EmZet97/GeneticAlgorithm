@@ -18,7 +18,7 @@ namespace GeneticAlgorithm.Selections
             public RouletteElement(double upperBorder, double sumOfValues, IEnumerable<Entity> entities)
             {
                 Entity = entities.First();
-                UpperBorder = upperBorder + Entity.ValueIndex / sumOfValues;
+                UpperBorder = upperBorder + (1f / (Entity.ValueIndex + 0.1f)) / sumOfValues;
 
                 if (entities.Count() > 1)
                     Next = new RouletteElement(UpperBorder, sumOfValues, entities.Skip(1));
@@ -57,7 +57,7 @@ namespace GeneticAlgorithm.Selections
 
         private static RouletteElement CreateRoulette(IEnumerable<Entity> entryPopulation)
         {
-            var sumOfValues = entryPopulation.Select(e => e.ValueIndex).Sum();
+            var sumOfValues = entryPopulation.Select(e => 1f / (e.ValueIndex + 0.1f)).Sum();
             var firstElement = new RouletteElement(0, sumOfValues, entryPopulation);
 
             return firstElement;

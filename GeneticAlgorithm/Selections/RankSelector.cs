@@ -16,7 +16,8 @@ namespace GeneticAlgorithm.Selections
         public IEnumerable<Entity> Select(IEnumerable<Entity> population)
         {
             var selectionCount = (int)(population.Count() * Probability);
-            var bests = population.OrderByDescending(e => e.ValueIndex).Take(selectionCount).ToArray();
+
+            var bests = population.OrderBy(e => e.ValueIndex).Take(selectionCount).ToArray();
 
             return bests;
         }

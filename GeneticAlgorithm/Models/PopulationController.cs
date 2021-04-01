@@ -99,16 +99,18 @@ namespace GeneticAlgorithm.Models
         private EvolutionResult GetEvolutionResult()
         {
             var average = Population.Select(e => e.ValueIndex).Average();
-            var max = Population.Select(e => e.ValueIndex).Max();
+            var best = Population.OrderBy(e => e.ValueIndex).First();
+            var bestIndex = Population.Select(e => e.ValueIndex).Min();
 
             double sumOfSquaresOfDifferences = Population.Select(e => (e.ValueIndex - average) * (e.ValueIndex - average)).Sum();
             double stdDev = Math.Sqrt(sumOfSquaresOfDifferences / Population.Count);
 
             var result = new EvolutionResult()
             {
-                BestResultIndex = new DataPoint(CurrentEpoch, max),
+                BestResultIndex = new DataPoint(CurrentEpoch, bestIndex),
                 ResultsMeanIndex = new DataPoint(CurrentEpoch, average),
                 StandardDeviation = new DataPoint(CurrentEpoch, stdDev),
+                BestPointCoordinates = new DataPoint(best.ValueX, best.ValueY),
                 EpochPoints = Population.Select(x => new Point(x.ValueX, x.ValueY)).ToArray()
             };
 

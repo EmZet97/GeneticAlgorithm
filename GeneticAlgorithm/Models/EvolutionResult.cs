@@ -9,6 +9,7 @@ namespace GeneticAlgorithm.Models
         public DataPoint ResultsMeanIndex { get; set; } = new();
         public DataPoint BestResultIndex { get; set; } = new();
         public DataPoint StandardDeviation { get; set; } = new();
+        public DataPoint BestPointCoordinates { get; set; } = new();
         public Point[] EpochPoints { get; set; }
 
         public EvolutionMinimalizedResult Minimalize()

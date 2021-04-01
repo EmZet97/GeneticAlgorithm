@@ -16,7 +16,7 @@ namespace GeneticAlgorithm.Extractors
         {
             var entitiesNumber = (int)(population.Count() * Percent);
 
-            var extracted = population.OrderByDescending(e => e.ValueIndex).Take(entitiesNumber);
+            var extracted = population.OrderBy(e => e.ValueIndex).Take(entitiesNumber);
 
             return extracted;
         }
