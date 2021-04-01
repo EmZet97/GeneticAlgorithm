@@ -1,0 +1,151 @@
+﻿<Window x:Class="GeneticAlgorithmFloatingPointRepresentation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GeneticAlgorithmFloatingPointRepresentation"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts" 
+        xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="Genetic Algorithm" Height="850" Width="1000" Background="#414042" MinWidth="1000" MinHeight="850">
+    <StackPanel>
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Column="0"  Content="Chromosome bit length:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="1" Name="ChromosomeBitLengthTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="ChromosomeBitLengthTextBox_TextChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Population size:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" Name="PopulationSizeTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="PopulationSizeTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Row="0" FontWeight="Bold" Content="Selection method:"/>
+            <ComboBox Grid.Column="1" Name="SelectorDropDown" SelectionChanged="SelectorDropDown_SelectionChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Percent of population:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" x:Name="SelectorProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="SelectorProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Row="0" FontWeight="Bold" Content="Crossover method:"/>
+            <ComboBox Grid.Column="1" Name="CrossoverDropDown" SelectionChanged="CrossoverDropDown_SelectionChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Crossover probability:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" Name="CrossoverProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="CrossoverProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Row="0" FontWeight="Bold" Content="Mutation method:"/>
+            <ComboBox Grid.Column="1" Name="MutationDropDown" SelectionChanged="MutationDropDown_SelectionChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2"  Content="Mutation probability:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="3" Name="MutationProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="MutationProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Column="0"  Content="Elitist strategy percent:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="1" Name="ElitistStrategyProbabilityTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="ElitistStrategyProbabilityTextBox_TextChanged"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Foreground="#E6E7E8" Grid.Column="0" Content="Number of epochs:" HorizontalContentAlignment="Right"/>
+            <TextBox Grid.Column="1" Name="NumberOfEpochsTextBox" PreviewTextInput="SelectorProbabilityTextBox_PreviewTextInput" LostFocus="NumberOfEpochsTextBox_TextChanged"/>
+            <Label Foreground="#E6E7E8" Grid.Column="2" Content="Progress update:" HorizontalContentAlignment="Right"/>
+            <CheckBox Grid.Column="3" Margin="5" x:Name="ProgressUpdate_CheckBox"/>
+        </Grid>
+
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Content="Start" Name="StartButton" Click="Start_Click"/>
+            <Button Grid.Column="2" Content="Stop" IsEnabled="False" Name="StopButton" Click="StopButton_Click"/>
+        </Grid>
+        <Grid Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="6*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Foreground="#E6E7E8" FontSize="20" Content="Time:" HorizontalAlignment="Right"/>
+            <Label Grid.Column="1" FontWeight="Bold" Foreground="Gold" FontSize="20" Content="" x:Name="TimeCounter_Label" HorizontalAlignment="Left"/>
+            <Label Grid.Column="2" Foreground="#E6E7E8" FontSize="20" Content="Current epoch:" HorizontalAlignment="Right"/>
+            <Label Grid.Column="3" FontWeight="Bold" Foreground="Gold" FontSize="20" Content="" x:Name="CurrentEpoch_Label" HorizontalAlignment="Left"/>
+            <Label Grid.Column="4" Foreground="#E6E7E8" FontSize="20" Content="Current extremum:" HorizontalAlignment="Right"/>
+            <Label Grid.Column="5" FontWeight="Bold" Foreground="Gold" FontSize="20" Content="" x:Name="BestValue_Label" HorizontalAlignment="Left"/>
+        </Grid>
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <oxy:Plot Margin="5" Grid.Column="0" Background=" #fdfefe " LegendBorder="Black" IsLegendVisible="True" LegendPosition="RightTop" LegendTitle="Legend" Title="Results in epochs" Name="Chart" IsManipulationEnabled="False" Height="400">
+                    <oxy:Plot.Series >
+                        <oxy:LineSeries Name="Line1" Color="Red" Title="Results mean [0-1]"/>
+                        <oxy:LineSeries Name="Line2" Color="Blue" Title="Best result [0-1]"/>
+                        <oxy:LineSeries Name="Line3" Color="Yellow" Title="Standard deviation [0-1]"/>
+                    </oxy:Plot.Series>
+                    <oxy:Plot.Axes>
+                        <oxy:LinearAxis Title="Epoch" Position="Bottom" Minimum="0" AbsoluteMinimum="0"/>
+                        <oxy:LinearAxis Title="Distance from the extreme" Position="Left" Minimum="-10" IsZoomEnabled="False"/>
+                    </oxy:Plot.Axes>
+                </oxy:Plot>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <oxy:Plot Title="Points (x, y) in epochs" Background=" #fdfefe " LegendBorder="Black" IsLegendVisible="True" LegendPosition="BottomRight" Margin="5" Name="Chart2" IsManipulationEnabled="False" Height="400">
+                    <oxy:Plot.Axes>
+                        <oxy:LinearAxis Position="Bottom" Minimum="-5" Maximum="5" Title="X"/>
+                        <oxy:LinearAxis Position="Left" Minimum="-5" Maximum="5" Title="Y"/>
+                    </oxy:Plot.Axes>
+                    <oxy:Plot.Series >
+                        <oxy:ScatterSeries Name="FinalPoint" Color="Green" Title="Function extremum" MarkerType="Circle"/>
+                        <oxy:ScatterSeries Name="EpochPoints" Color="Red" Title="Epoch points" MarkerType="Circle"/>
+                    </oxy:Plot.Series>
+                </oxy:Plot>
+                <Label Foreground="#E6E7E8" FontWeight="Bold" Name="EpochNumber" Content="0" HorizontalAlignment="Center"/>
+                <ScrollBar IsEnabled="False" x:Name="EpochSlider" Orientation="Horizontal" Maximum="100" Minimum="0" Value="0" ValueChanged="EpochSlider_ValueChanged" ></ScrollBar>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</Window>

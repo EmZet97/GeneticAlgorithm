@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticAlgorithm", "GeneticAlgorithm\GeneticAlgorithm.csproj", "{67BB1A0D-4C9D-4A41-A75C-DD530E4B65B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{22CAD198-223D-4B35-A9C0-4A44AC30D35E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticAlgorithmFloatingPointRepresentation", "GeneticAlgorithmFloatingPointRepresentation\GeneticAlgorithmFloatingPointRepresentation.csproj", "{8935928A-8896-4BA6-9933-356CF906DC59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{67BB1A0D-4C9D-4A41-A75C-DD530E4B65B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67BB1A0D-4C9D-4A41-A75C-DD530E4B65B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67BB1A0D-4C9D-4A41-A75C-DD530E4B65B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22CAD198-223D-4B35-A9C0-4A44AC30D35E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22CAD198-223D-4B35-A9C0-4A44AC30D35E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22CAD198-223D-4B35-A9C0-4A44AC30D35E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22CAD198-223D-4B35-A9C0-4A44AC30D35E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8935928A-8896-4BA6-9933-356CF906DC59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8935928A-8896-4BA6-9933-356CF906DC59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8935928A-8896-4BA6-9933-356CF906DC59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8935928A-8896-4BA6-9933-356CF906DC59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
